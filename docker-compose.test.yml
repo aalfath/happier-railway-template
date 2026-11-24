@@ -1,0 +1,23 @@
+# Local test only (not used by Railway): the same variables the template sets.
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: happier
+      POSTGRES_PASSWORD: localtestonly
+      POSTGRES_DB: happier
+    volumes: [pgdata:/var/lib/postgresql/data]
+  happier:
+    build: .
+    ports: ["3005:3005"]
+    environment:
+      PORT: "3005"
+      DATABASE_URL: postgresql://happier:localtestonly@postgres:5432/happier
+      HANDY_MASTER_SECRET: ${HANDY_MASTER_SECRET}
+      OWNER_SECRET_KEY: ${OWNER_SECRET_KEY}
+      HAPPIER_PUBLIC_SERVER_URL: http://localhost:3005
+    volumes: [data:/data]
+    depends_on: [postgres]
+volumes:
+  pgdata:
+  data:
